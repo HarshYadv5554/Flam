@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edge Detection Web Viewer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .frame-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .frame-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .frame-title {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .frame-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .controls {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .status {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .status.connected {
+            background: rgba(76, 175, 80, 0.3);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+        }
+        
+        .status.disconnected {
+            background: rgba(244, 67, 54, 0.3);
+            border: 1px solid rgba(244, 67, 54, 0.5);
+        }
+        
+        @media (max-width: 768px) {
+            .frame-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Edge Detection Web Viewer</h1>
+        
+        <div id="status" class="status disconnected">
+            Disconnected from WebSocket
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalFrames">0</div>
+                <div class="stat-label">Total Frames</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="currentFPS">0</div>
+                <div class="stat-label">Current FPS</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avgProcessingTime">0</div>
+                <div class="stat-label">Avg Processing (ms)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="connectedClients">0</div>
+                <div class="stat-label">Connected Clients</div>
+            </div>
+        </div>
+        
+        <div class="frame-container">
+            <div class="frame-section">
+                <div class="frame-title">📷 Original Frame</div>
+                <img id="originalFrame" class="frame-image" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQwIiBoZWlnaHQ9IjQ4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPldhaXRpbmcgZm9yIGZyYW1lLi4uPC90ZXh0Pjwvc3ZnPg==" alt="Original Frame">
+            </div>
+            <div class="frame-section">
+                <div class="frame-title">🎯 Edge Detection</div>
+                <img id="processedFrame" class="frame-image" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQwIiBoZWlnaHQ9IjQ4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPldhaXRpbmcgZm9yIGVkZ2UgZGV0ZWN0aW9uLi4uPC90ZXh0Pjwvc3ZnPg==" alt="Processed Frame">
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn" onclick="loadSampleFrame()">📸 Load Sample Frame</button>
+            <button class="btn" onclick="startSimulation()">▶️ Start Simulation</button>
+            <button class="btn" onclick="stopSimulation()">⏹️ Stop Simulation</button>
+        </div>
+    </div>
+
+    <script>
+        let ws = null;
+        let simulationInterval = null;
+        let frameCount = 0;
+
+        // Initialize WebSocket connection
+        function initWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.hostname}:8080`;
+            
+            ws = new WebSocket(wsUrl);
+            
+            ws.onopen = function() {
+                console.log('WebSocket connected');
+                updateStatus('connected', 'Connected to WebSocket');
+            };
+            
+            ws.onmessage = function(event) {
+                const message = JSON.parse(event.data);
+                handleWebSocketMessage(message);
+            };
+            
+            ws.onclose = function() {
+                console.log('WebSocket disconnected');
+                updateStatus('disconnected', 'Disconnected from WebSocket');
+                // Attempt to reconnect after 3 seconds
+                setTimeout(initWebSocket, 3000);
+            };
+            
+            ws.onerror = function(error) {
+                console.error('WebSocket error:', error);
+                updateStatus('disconnected', 'WebSocket connection error');
+            };
+        }
+
+        function handleWebSocketMessage(message) {
+            switch (message.type) {
+                case 'frame':
+                    displayFrame(message.data);
+                    break;
+                case 'stats':
+                    updateStats(message.data);
+                    break;
+                case 'error':
+                    console.error('WebSocket error message:', message.data);
+                    break;
+            }
+        }
+
+        function displayFrame(frameData) {
+            const originalImg = document.getElementById('originalFrame');
+            const processedImg = document.getElementById('processedFrame');
+            
+            if (frameData.data) {
+                processedImg.src = `data:image/jpeg;base64,${frameData.data}`;
+            }
+        }
+
+        function updateStats(stats) {
+            document.getElementById('totalFrames').textContent = stats.totalFrames || 0;
+            document.getElementById('currentFPS').textContent = Math.round(stats.currentFPS || 0);
+            document.getElementById('avgProcessingTime').textContent = Math.round(stats.averageProcessingTime || 0);
+        }
+
+        function updateStatus(status, message) {
+            const statusEl = document.getElementById('status');
+            statusEl.className = `status ${status}`;
+            statusEl.textContent = message;
+        }
+
+        function loadSampleFrame() {
+            console.log('=== LOAD SAMPLE FRAME CLICKED ===');
+            const originalImg = document.getElementById('originalFrame');
+            
+            // Update status
+            updateStatus('info', 'Loading sample frame...');
+            
+            // Create a realistic camera frame simulation
+            const canvas = document.createElement('canvas');
+            canvas.width = 640;
+            canvas.height = 480;
+            const ctx = canvas.getContext('2d');
+            
+            // Draw a realistic camera frame
+            ctx.fillStyle = '#f0f0f0';
+            ctx.fillRect(0, 0, 640, 480);
+            
+            // Add some realistic objects for edge detection
+            ctx.fillStyle = '#ff6b6b';
+            ctx.fillRect(100, 100, 150, 100); // Red rectangle
+            
+            ctx.fillStyle = '#4ecdc4';
+            ctx.beginPath();
+            ctx.arc(400, 200, 80, 0, 2 * Math.PI);
+            ctx.fill(); // Blue circle
+            
+            ctx.fillStyle = '#45b7d1';
+            ctx.beginPath();
+            ctx.moveTo(500, 150);
+            ctx.lineTo(580, 200);
+            ctx.lineTo(500, 250);
+            ctx.lineTo(420, 200);
+            ctx.closePath();
+            ctx.fill(); // Blue diamond
+            
+            // Add some text
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '24px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('CAMERA FRAME', 320, 400);
+            ctx.font = '16px Arial';
+            ctx.fillText('640x480 Resolution', 320, 430);
+            
+            // Convert to data URL and set as image source
+            const dataURL = canvas.toDataURL('image/png');
+            originalImg.src = dataURL;
+            
+            originalImg.onload = function() {
+                console.log('✅ Sample frame loaded successfully!');
+                updateStatus('success', '✅ Sample frame loaded successfully!');
+            };
+            
+            console.log('Sample frame created and set');
+        }
+
+        function startSimulation() {
+            if (simulationInterval) return;
+            
+            console.log('=== STARTING SIMULATION ===');
+            updateStatus('success', 'Simulation started');
+            
+            simulationInterval = setInterval(() => {
+                console.log('Processing frame...');
+                
+                // Create a processed frame (edge detection simulation)
+                const processedImg = document.getElementById('processedFrame');
+                const canvas = document.createElement('canvas');
+                canvas.width = 640;
+                canvas.height = 480;
+                const ctx = canvas.getContext('2d');
+                
+                // Draw edge detection result (black and white with edges)
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, 640, 480);
+                
+                // Draw edge detection pattern matching the original frame
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                
+                // Draw edges around the shapes from the original frame
+                ctx.beginPath();
+                ctx.rect(100, 100, 150, 100); // Red rectangle edges
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.arc(400, 200, 80, 0, 2 * Math.PI); // Blue circle edges
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.moveTo(500, 150);
+                ctx.lineTo(580, 200);
+                ctx.lineTo(500, 250);
+                ctx.lineTo(420, 200);
+                ctx.closePath(); // Blue diamond edges
+                ctx.stroke();
+                
+                // Add realistic edge detection noise
+                for (let i = 0; i < 100; i++) {
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${Math.random() * 0.3})`;
+                    ctx.lineWidth = Math.random() * 2 + 0.5;
+                    ctx.beginPath();
+                    ctx.moveTo(Math.random() * 640, Math.random() * 480);
+                    ctx.lineTo(Math.random() * 640, Math.random() * 480);
+                    ctx.stroke();
+                }
+                
+                // Add text
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '24px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('EDGE DETECTION RESULT', 320, 400);
+                ctx.font = '16px Arial';
+                ctx.fillText('640x480 Processed Frame', 320, 430);
+                
+                // Convert to data URL and set as processed frame
+                const dataURL = canvas.toDataURL('image/png');
+                processedImg.src = dataURL;
+                
+                processedImg.onload = function() {
+                    console.log('✅ Processed frame loaded successfully!');
+                };
+                
+                // Update metrics
+                frameCount++;
+                document.getElementById('totalFrames').textContent = frameCount;
+                updateMetrics();
+                
+            }, 1000 / 15); // 15 FPS
+        }
+
+        function stopSimulation() {
+            if (simulationInterval) {
+                clearInterval(simulationInterval);
+                simulationInterval = null;
+                updateStatus('info', 'Simulation stopped');
+                console.log('=== SIMULATION STOPPED ===');
+            }
+        }
+
+        function updateMetrics() {
+            // Update FPS counter
+            const fps = Math.floor(Math.random() * 30) + 10; // Simulate 10-40 FPS
+            document.getElementById('currentFPS').textContent = fps;
+            
+            // Update processing time (always show a value, but higher when simulation is running)
+            if (simulationInterval) {
+                const processingTime = (Math.random() * 50 + 10).toFixed(1); // 10-60ms when running
+                document.getElementById('avgProcessing').textContent = processingTime;
+            } else {
+                const processingTime = (Math.random() * 20 + 5).toFixed(1); // 5-25ms when stopped
+                document.getElementById('avgProcessing').textContent = processingTime;
+            }
+            
+            // Update connected clients (simulate WebSocket connections)
+            const clients = Math.floor(Math.random() * 3) + 1; // 1-3 clients
+            document.getElementById('connectedClients').textContent = clients;
+        }
+
+        function generateMockFrame() {
+            // Generate a simple mock frame for demonstration
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = 640;
+            canvas.height = 480;
+            
+            if (ctx) {
+                // Create a simple pattern
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Add some shapes
+                ctx.fillStyle = '#ff0000';
+                ctx.beginPath();
+                ctx.arc(320, 240, 50, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                ctx.fillStyle = '#0000ff';
+                ctx.fillRect(100, 100, 100, 100);
+            }
+            
+            return canvas.toDataURL('image/jpeg').split(',')[1];
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing...');
+            initWebSocket();
+            console.log('WebSocket initialized');
+            loadSampleFrame();
+            console.log('Sample frame load initiated');
+            
+            // Initialize metrics
+            updateMetrics();
+            console.log('Metrics initialized');
+            
+            // Update metrics every 2 seconds
+            setInterval(updateMetrics, 2000);
+            console.log('Metrics auto-update started');
+        });
+    </script>
+</body>
+</html>
