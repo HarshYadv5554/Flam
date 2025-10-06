@@ -29,10 +29,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var textureView: TextureView
     private lateinit var fpsTextView: TextView
     private lateinit var toggleButton: Button
+    private lateinit var grayscaleButton: Button
+    private lateinit var invertButton: Button
+    private lateinit var edgeButton: Button
     
     private var isEdgeDetectionEnabled = true
     private var frameCount = 0
     private var lastTime = System.currentTimeMillis()
+    private var totalProcessingTime = 0L
+    private var processingFrameCount = 0
     
     companion object {
         private const val TAG = "MainActivity"
@@ -54,6 +59,9 @@ class MainActivity : AppCompatActivity() {
         textureView = findViewById(R.id.textureView)
         fpsTextView = findViewById(R.id.fpsTextView)
         toggleButton = findViewById(R.id.toggleButton)
+        grayscaleButton = findViewById(R.id.grayscaleButton)
+        invertButton = findViewById(R.id.invertButton)
+        edgeButton = findViewById(R.id.edgeButton)
     }
     
     private fun initializeComponents() {
@@ -70,10 +78,28 @@ class MainActivity : AppCompatActivity() {
         toggleButton.setOnClickListener {
             isEdgeDetectionEnabled = !isEdgeDetectionEnabled
             toggleButton.text = if (isEdgeDetectionEnabled) "Show Raw" else "Show Edge"
+            
+            // Set render mode for OpenGL shader effects
+            val renderMode = if (isEdgeDetectionEnabled) 3 else 0 // 3=Edge Detection, 0=Normal
+            openGLRenderer.setRenderMode(renderMode)
+        }
+        
+        grayscaleButton.setOnClickListener {
+            openGLRenderer.setRenderMode(1) // Grayscale
+        }
+        
+        invertButton.setOnClickListener {
+            openGLRenderer.setRenderMode(2) // Invert
+        }
+        
+        edgeButton.setOnClickListener {
+            openGLRenderer.setRenderMode(3) // Edge Detection
         }
     }
     
     private fun onFrameCaptured(imageProxy: ImageProxy) {
+        val startProcessingTime = System.currentTimeMillis()
+        
         try {
             val yBuffer = imageProxy.planes[0].buffer
             val uBuffer = imageProxy.planes[1].buffer
@@ -101,6 +127,11 @@ class MainActivity : AppCompatActivity() {
             // Render with OpenGL
             openGLRenderer.renderFrame(processedFrame, width, height)
             
+            // Track processing time
+            val processingTime = System.currentTimeMillis() - startProcessingTime
+            totalProcessingTime += processingTime
+            processingFrameCount++
+            
             // Update FPS counter
             updateFPS()
             
@@ -116,11 +147,18 @@ class MainActivity : AppCompatActivity() {
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastTime >= 1000) {
             val fps = frameCount * 1000 / (currentTime - lastTime)
+            val avgProcessingTime = if (processingFrameCount > 0) {
+                totalProcessingTime / processingFrameCount
+            } else 0L
+            
             runOnUiThread {
-                fpsTextView.text = "FPS: $fps"
+                fpsTextView.text = "FPS: $fps | Avg: ${avgProcessingTime}ms"
             }
+            
             frameCount = 0
             lastTime = currentTime
+            totalProcessingTime = 0L
+            processingFrameCount = 0
         }
     }
     

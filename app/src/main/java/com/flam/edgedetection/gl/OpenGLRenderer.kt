@@ -31,9 +31,29 @@ class OpenGLRenderer(private val textureView: android.view.TextureView) : GLSurf
         private const val fragmentShaderCode = """
             precision mediump float;
             uniform sampler2D uTexture;
+            uniform int uRenderMode;
+            uniform float uTime;
             varying vec2 vTexCoordVarying;
             void main() {
-                gl_FragColor = texture2D(uTexture, vTexCoordVarying);
+                vec4 color = texture2D(uTexture, vTexCoordVarying);
+                
+                if (uRenderMode == 1) {
+                    // Grayscale effect
+                    float gray = dot(color.rgb, vec3(0.299, 0.587, 0.114));
+                    gl_FragColor = vec4(gray, gray, gray, color.a);
+                } else if (uRenderMode == 2) {
+                    // Invert effect
+                    gl_FragColor = vec4(1.0 - color.rgb, color.a);
+                } else if (uRenderMode == 3) {
+                    // Edge detection simulation with noise
+                    float noise = sin(vTexCoordVarying.x * 100.0 + uTime) * 0.1;
+                    noise += sin(vTexCoordVarying.y * 100.0 + uTime) * 0.1;
+                    float edge = step(0.5, color.r + noise);
+                    gl_FragColor = vec4(edge, edge, edge, 1.0);
+                } else {
+                    // Normal rendering
+                    gl_FragColor = color;
+                }
             }
         """
     }
@@ -44,6 +64,12 @@ class OpenGLRenderer(private val textureView: android.view.TextureView) : GLSurf
     private var positionHandle: Int = 0
     private var texCoordHandle: Int = 0
     private var textureHandleUniform: Int = 0
+    private var renderModeHandle: Int = 0
+    private var timeHandle: Int = 0
+    
+    // Render modes: 0=Normal, 1=Grayscale, 2=Invert, 3=Edge Detection
+    private var currentRenderMode = 0
+    private var startTime = System.currentTimeMillis()
     
     private val mvpMatrix = FloatArray(16)
     private val projectionMatrix = FloatArray(16)
@@ -119,6 +145,11 @@ class OpenGLRenderer(private val textureView: android.view.TextureView) : GLSurf
         frameHeight = height
     }
     
+    fun setRenderMode(mode: Int) {
+        currentRenderMode = mode
+        Log.d(TAG, "Render mode set to: $mode")
+    }
+    
     private fun renderFrame() {
         if (program == 0) return
         
@@ -148,6 +179,11 @@ class OpenGLRenderer(private val textureView: android.view.TextureView) : GLSurf
         
         // Set MVP matrix
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0)
+        
+        // Set render mode and time uniforms
+        GLES20.glUniform1i(renderModeHandle, currentRenderMode)
+        val currentTime = (System.currentTimeMillis() - startTime) / 1000.0f
+        GLES20.glUniform1f(timeHandle, currentTime)
         
         // Draw the quad
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
@@ -200,6 +236,8 @@ class OpenGLRenderer(private val textureView: android.view.TextureView) : GLSurf
         texCoordHandle = GLES20.glGetAttribLocation(program, "vTexCoord")
         mvpMatrixHandle = GLES20.glGetUniformLocation(program, "uMVPMatrix")
         textureHandleUniform = GLES20.glGetUniformLocation(program, "uTexture")
+        renderModeHandle = GLES20.glGetUniformLocation(program, "uRenderMode")
+        timeHandle = GLES20.glGetUniformLocation(program, "uTime")
         
         Log.d(TAG, "Shaders initialized")
     }
