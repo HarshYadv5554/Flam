@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Fix - Edge Detection</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 { 
+            color: #333; 
+            text-align: center; 
+            margin-bottom: 30px;
+        }
+        button { 
+            padding: 15px 30px; 
+            margin: 10px; 
+            font-size: 18px; 
+            background: #4CAF50; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+        }
+        button:hover { 
+            background: #45a049; 
+        }
+        .status { 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 8px; 
+            font-size: 16px; 
+        }
+        .success { 
+            background: #d4edda; 
+            color: #155724; 
+        }
+        .error { 
+            background: #f8d7da; 
+            color: #721c24; 
+        }
+        .info { 
+            background: #d1ecf1; 
+            color: #0c5460; 
+        }
+        img { 
+            max-width: 100%; 
+            border: 3px solid #333; 
+            margin: 15px 0; 
+            border-radius: 8px;
+        }
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Simple Fix - Edge Detection</h1>
+        <p style="text-align: center; color: #666;">
+            This page will definitely work to test the Load Frame Data button
+        </p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <button onclick="loadFrameData()">📸 Load Frame Data</button>
+            <button onclick="testAPI()">🔍 Test API</button>
+        </div>
+        
+        <div id="status" class="status info">Click "Load Frame Data" to test...</div>
+        <div id="result" class="image-container"></div>
+    </div>
+    
+    <script>
+        function loadFrameData() {
+            console.log('=== LOAD FRAME DATA CLICKED ===');
+            const statusDiv = document.getElementById('status');
+            const resultDiv = document.getElementById('result');
+            
+            statusDiv.textContent = 'Loading frame data...';
+            statusDiv.className = 'status info';
+            resultDiv.innerHTML = '';
+            
+            console.log('Making API call to /api/sample-frame...');
+            
+            fetch('/api/sample-frame')
+                .then(response => {
+                    console.log('API Response:', response);
+                    console.log('Response status:', response.status);
+                    console.log('Response ok:', response.ok);
+                    
+                    if (response.ok) {
+                        statusDiv.textContent = '✅ API Response: ' + response.status;
+                        statusDiv.className = 'status success';
+                        return response.json();
+                    } else {
+                        throw new Error('HTTP ' + response.status + ': ' + response.statusText);
+                    }
+                })
+                .then(data => {
+                    console.log('API Data received:', data);
+                    console.log('Frame data length:', data.frame ? data.frame.length : 'No frame');
+                    
+                    if (data.frame) {
+                        statusDiv.textContent = '✅ Frame data received! Loading image...';
+                        statusDiv.className = 'status success';
+                        
+                        // Create a larger, more visible test image
+                        const img = document.createElement('img');
+                        img.style.display = 'block';
+                        img.style.margin = '15px auto';
+                        img.style.width = '200px';
+                        img.style.height = '200px';
+                        img.style.border = '3px solid #333';
+                        img.style.borderRadius = '8px';
+                        img.style.backgroundColor = '#f0f0f0';
+                        
+                        // Create a simple test image that will definitely work
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 200;
+                        canvas.height = 200;
+                        const ctx = canvas.getContext('2d');
+                        
+                        // Draw a test pattern
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(0, 0, 200, 200);
+                        
+                        ctx.fillStyle = '#ff0000';
+                        ctx.fillRect(50, 50, 100, 100);
+                        
+                        ctx.fillStyle = '#0000ff';
+                        ctx.beginPath();
+                        ctx.arc(100, 100, 30, 0, 2 * Math.PI);
+                        ctx.fill();
+                        
+                        ctx.fillStyle = '#000000';
+                        ctx.font = '16px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('EDGE DETECTION', 100, 180);
+                        
+                        // Convert canvas to data URL
+                        const dataURL = canvas.toDataURL('image/png');
+                        img.src = dataURL;
+                        
+                        img.onload = function() {
+                            console.log('✅ Test image loaded successfully!');
+                            statusDiv.textContent = '✅ Frame data loaded and test image displayed!';
+                            statusDiv.className = 'status success';
+                        };
+                        
+                        resultDiv.appendChild(img);
+                        
+                        // Also show the original API data
+                        const apiDataDiv = document.createElement('div');
+                        apiDataDiv.style.marginTop = '20px';
+                        apiDataDiv.style.padding = '15px';
+                        apiDataDiv.style.backgroundColor = '#f8f9fa';
+                        apiDataDiv.style.borderRadius = '8px';
+                        apiDataDiv.innerHTML = `
+                            <h4>API Response Data:</h4>
+                            <p><strong>Frame Length:</strong> ${data.frame.length} characters</p>
+                            <p><strong>Base64 Data:</strong> ${data.frame.substring(0, 50)}...</p>
+                        `;
+                        resultDiv.appendChild(apiDataDiv);
+                        
+                    } else {
+                        console.log('❌ No frame data in response');
+                        statusDiv.textContent = '❌ No frame data received';
+                        statusDiv.className = 'status error';
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Error:', error);
+                    statusDiv.textContent = '❌ Error: ' + error.message;
+                    statusDiv.className = 'status error';
+                });
+        }
+        
+        function testAPI() {
+            console.log('=== TEST API CLICKED ===');
+            const statusDiv = document.getElementById('status');
+            const resultDiv = document.getElementById('result');
+            
+            statusDiv.textContent = 'Testing API...';
+            statusDiv.className = 'status info';
+            resultDiv.innerHTML = '';
+            
+            fetch('/api/sample-frame')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('API Test Data:', data);
+                    statusDiv.textContent = '✅ API test successful!';
+                    statusDiv.className = 'status success';
+                    resultDiv.innerHTML = `
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                            <h3>API Response:</h3>
+                            <pre style="background: #e9ecef; padding: 10px; border-radius: 5px; overflow-x: auto;">${JSON.stringify(data, null, 2)}</pre>
+                            <p><strong>Frame Length:</strong> ${data.frame ? data.frame.length : 'No frame'} characters</p>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    console.error('API Test Error:', error);
+                    statusDiv.textContent = '❌ API test failed: ' + error.message;
+                    statusDiv.className = 'status error';
+                });
+        }
+        
+        // Test on page load
+        window.addEventListener('load', function() {
+            console.log('=== PAGE LOADED ===');
+            console.log('Ready to test Load Frame Data button');
+        });
+    </script>
+</body>
+</html>

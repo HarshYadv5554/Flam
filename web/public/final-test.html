@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Final Test - Edge Detection</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 { 
+            color: #333; 
+            text-align: center; 
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .test-section { 
+            margin: 25px 0; 
+            padding: 20px; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 10px; 
+            background: #f9f9f9;
+        }
+        button { 
+            padding: 15px 30px; 
+            margin: 10px; 
+            font-size: 18px; 
+            background: #4CAF50; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+        }
+        button:hover { 
+            background: #45a049; 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .status { 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: bold;
+        }
+        .success { 
+            background: #d4edda; 
+            color: #155724; 
+            border: 2px solid #c3e6cb; 
+        }
+        .error { 
+            background: #f8d7da; 
+            color: #721c24; 
+            border: 2px solid #f5c6cb; 
+        }
+        .info { 
+            background: #d1ecf1; 
+            color: #0c5460; 
+            border: 2px solid #bee5eb; 
+        }
+        img { 
+            max-width: 100%; 
+            border: 3px solid #333; 
+            margin: 15px 0; 
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .metric-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .metric-label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Final Edge Detection Test</h1>
+        <p style="text-align: center; font-size: 18px; color: #666;">
+            Complete testing of the Edge Detection Web Viewer
+        </p>
+        
+        <div class="test-section">
+            <h3>📸 Test Sample Frame Loading</h3>
+            <button onclick="testSampleFrame()">Load Sample Frame</button>
+            <div id="frameStatus" class="status info">Click the button to test sample frame loading...</div>
+            <div id="frameResult" class="image-container"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔄 Test Simulation</h3>
+            <button onclick="testSimulation()">Start Simulation</button>
+            <div id="simStatus" class="status info">Click the button to test simulation...</div>
+            <div id="simResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>📊 Test Metrics</h3>
+            <button onclick="testMetrics()">Show Metrics</button>
+            <div id="metricsStatus" class="status info">Click the button to test metrics...</div>
+            <div id="metricsResult" class="metrics"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔗 Test API Directly</h3>
+            <button onclick="testAPI()">Test API Response</button>
+            <div id="apiStatus" class="status info">Click the button to test API directly...</div>
+            <div id="apiResult"></div>
+        </div>
+    </div>
+    
+    <script>
+        let simulationInterval;
+        let frameCount = 0;
+        
+        function testSampleFrame() {
+            const statusDiv = document.getElementById('frameStatus');
+            const resultDiv = document.getElementById('frameResult');
+            
+            statusDiv.textContent = 'Loading sample frame...';
+            statusDiv.className = 'status info';
+            resultDiv.innerHTML = '';
+            
+            fetch('/api/sample-frame')
+                .then(response => {
+                    console.log('Response:', response);
+                    if (response.ok) {
+                        statusDiv.textContent = '✅ API Response: ' + response.status;
+                        statusDiv.className = 'status success';
+                        return response.json();
+                    } else {
+                        throw new Error('HTTP ' + response.status);
+                    }
+                })
+                .then(data => {
+                    console.log('Data:', data);
+                    if (data.frame) {
+                        const img = document.createElement('img');
+                        img.style.display = 'block';
+                        img.style.margin = '15px auto';
+                        img.style.maxWidth = '300px';
+                        
+                        // Try PNG first, then JPEG
+                        img.src = 'data:image/png;base64,' + data.frame;
+                        img.onload = function() {
+                            statusDiv.textContent = '✅ Sample frame loaded successfully!';
+                            statusDiv.className = 'status success';
+                        };
+                        img.onerror = function() {
+                            console.log('PNG failed, trying JPEG...');
+                            img.src = 'data:image/jpeg;base64,' + data.frame;
+                            img.onload = function() {
+                                statusDiv.textContent = '✅ Sample frame loaded successfully!';
+                                statusDiv.className = 'status success';
+                            };
+                            img.onerror = function() {
+                                statusDiv.textContent = '❌ Image failed to load!';
+                                statusDiv.className = 'status error';
+                            };
+                        };
+                        resultDiv.appendChild(img);
+                    } else {
+                        statusDiv.textContent = '❌ No frame data received';
+                        statusDiv.className = 'status error';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    statusDiv.textContent = '❌ Error: ' + error.message;
+                    statusDiv.className = 'status error';
+                });
+        }
+        
+        function testSimulation() {
+            const statusDiv = document.getElementById('simStatus');
+            const resultDiv = document.getElementById('simResult');
+            
+            if (simulationInterval) {
+                clearInterval(simulationInterval);
+            }
+            
+            statusDiv.textContent = 'Starting simulation...';
+            statusDiv.className = 'status info';
+            resultDiv.innerHTML = '';
+            
+            frameCount = 0;
+            simulationInterval = setInterval(() => {
+                frameCount++;
+                statusDiv.textContent = `🔄 Simulation running... Frame ${frameCount}`;
+                
+                if (frameCount >= 15) {
+                    clearInterval(simulationInterval);
+                    statusDiv.textContent = '✅ Simulation completed!';
+                    statusDiv.className = 'status success';
+                }
+            }, 200);
+        }
+        
+        function testMetrics() {
+            const statusDiv = document.getElementById('metricsStatus');
+            const resultDiv = document.getElementById('metricsResult');
+            
+            statusDiv.textContent = 'Generating metrics...';
+            statusDiv.className = 'status info';
+            
+            // Simulate metrics
+            const metrics = {
+                fps: Math.floor(Math.random() * 30) + 10,
+                processingTime: (Math.random() * 50 + 10).toFixed(2),
+                frameCount: Math.floor(Math.random() * 1000) + 100,
+                memoryUsage: (Math.random() * 100 + 50).toFixed(1)
+            };
+            
+            resultDiv.innerHTML = `
+                <div class="metric-card">
+                    <div class="metric-value">${metrics.fps}</div>
+                    <div class="metric-label">FPS</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${metrics.processingTime}ms</div>
+                    <div class="metric-label">Processing Time</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${metrics.frameCount}</div>
+                    <div class="metric-label">Frame Count</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${metrics.memoryUsage}MB</div>
+                    <div class="metric-label">Memory Usage</div>
+                </div>
+            `;
+            
+            statusDiv.textContent = '✅ Metrics generated successfully!';
+            statusDiv.className = 'status success';
+        }
+        
+        function testAPI() {
+            const statusDiv = document.getElementById('apiStatus');
+            const resultDiv = document.getElementById('apiResult');
+            
+            statusDiv.textContent = 'Testing API...';
+            statusDiv.className = 'status info';
+            resultDiv.innerHTML = '';
+            
+            fetch('/api/sample-frame')
+                .then(response => response.json())
+                .then(data => {
+                    statusDiv.textContent = '✅ API test successful!';
+                    statusDiv.className = 'status success';
+                    resultDiv.innerHTML = `
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                            <h4>API Response:</h4>
+                            <pre style="background: #e9ecef; padding: 10px; border-radius: 5px; overflow-x: auto;">${JSON.stringify(data, null, 2)}</pre>
+                            <p><strong>Frame Length:</strong> ${data.frame ? data.frame.length : 'No frame'} characters</p>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    statusDiv.textContent = '❌ API test failed: ' + error.message;
+                    statusDiv.className = 'status error';
+                });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        button { padding: 10px 20px; margin: 10px; font-size: 16px; }
+        img { max-width: 300px; border: 1px solid #ccc; margin: 10px; }
+        .status { padding: 10px; margin: 10px; background: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <h1>Simple API Test</h1>
+    
+    <button onclick="testAPI()">Test Sample Frame API</button>
+    <button onclick="testDirectImage()">Test Direct Image</button>
+    
+    <div id="status" class="status">Ready to test...</div>
+    <div id="result"></div>
+    
+    <script>
+        function testAPI() {
+            document.getElementById('status').textContent = 'Testing API...';
+            document.getElementById('result').innerHTML = '';
+            
+            fetch('/api/sample-frame')
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    document.getElementById('status').textContent = 'Response received: ' + response.status;
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Data received:', data);
+                    document.getElementById('status').textContent = 'Data received, frame length: ' + (data.frame ? data.frame.length : 'No frame');
+                    
+                    if (data.frame) {
+                        const img = document.createElement('img');
+                        img.src = 'data:image/jpeg;base64,' + data.frame;
+                        img.onload = function() {
+                            document.getElementById('status').textContent = 'Image loaded successfully!';
+                        };
+                        img.onerror = function() {
+                            document.getElementById('status').textContent = 'Error loading image!';
+                        };
+                        document.getElementById('result').appendChild(img);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('status').textContent = 'Error: ' + error.message;
+                });
+        }
+        
+        function testDirectImage() {
+            document.getElementById('status').textContent = 'Testing direct image...';
+            document.getElementById('result').innerHTML = '';
+            
+            // Create a simple test image
+            const canvas = document.createElement('canvas');
+            canvas.width = 200;
+            canvas.height = 150;
+            const ctx = canvas.getContext('2d');
+            
+            // Draw a simple pattern
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, 200, 150);
+            
+            ctx.fillStyle = '#ff0000';
+            ctx.fillRect(50, 50, 100, 50);
+            
+            ctx.fillStyle = '#0000ff';
+            ctx.beginPath();
+            ctx.arc(100, 100, 25, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            const img = document.createElement('img');
+            img.src = canvas.toDataURL('image/jpeg');
+            img.onload = function() {
+                document.getElementById('status').textContent = 'Direct image loaded successfully!';
+            };
+            document.getElementById('result').appendChild(img);
+        }
+    </script>
+</body>
+</html>

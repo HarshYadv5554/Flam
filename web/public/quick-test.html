@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        button { padding: 15px 30px; margin: 10px; font-size: 18px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        img { max-width: 400px; border: 2px solid #333; margin: 10px; }
+        .status { padding: 15px; margin: 10px; background: #f0f0f0; border-radius: 5px; font-size: 16px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>🚀 Quick Edge Detection Test</h1>
+    
+    <button onclick="testSampleFrame()">📸 Load Sample Frame</button>
+    <button onclick="testSimulation()">▶️ Start Simulation</button>
+    
+    <div id="status" class="status">Ready to test...</div>
+    <div id="result"></div>
+    
+    <script>
+        function testSampleFrame() {
+            document.getElementById('status').textContent = 'Loading sample frame...';
+            document.getElementById('status').className = 'status';
+            document.getElementById('result').innerHTML = '';
+            
+            fetch('/api/sample-frame')
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    if (response.ok) {
+                        document.getElementById('status').textContent = 'Response received: ' + response.status;
+                        return response.json();
+                    } else {
+                        throw new Error('HTTP ' + response.status);
+                    }
+                })
+                .then(data => {
+                    console.log('Data received:', data);
+                    document.getElementById('status').textContent = 'Data received, frame length: ' + (data.frame ? data.frame.length : 'No frame');
+                    
+                    if (data.frame) {
+                        const img = document.createElement('img');
+                        img.style.display = 'block';
+                        img.style.margin = '10px auto';
+                        
+                        // Try PNG first, then JPEG
+                        img.src = 'data:image/png;base64,' + data.frame;
+                        img.onload = function() {
+                            document.getElementById('status').textContent = '✅ Sample frame loaded successfully!';
+                            document.getElementById('status').className = 'status success';
+                        };
+                        img.onerror = function() {
+                            console.log('PNG failed, trying JPEG...');
+                            img.src = 'data:image/jpeg;base64,' + data.frame;
+                            img.onload = function() {
+                                document.getElementById('status').textContent = '✅ Sample frame loaded successfully!';
+                                document.getElementById('status').className = 'status success';
+                            };
+                            img.onerror = function() {
+                                document.getElementById('status').textContent = '❌ Error loading image!';
+                                document.getElementById('status').className = 'status error';
+                            };
+                        };
+                        document.getElementById('result').appendChild(img);
+                    } else {
+                        document.getElementById('status').textContent = '❌ No frame data received';
+                        document.getElementById('status').className = 'status error';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('status').textContent = '❌ Error: ' + error.message;
+                    document.getElementById('status').className = 'status error';
+                });
+        }
+        
+        function testSimulation() {
+            document.getElementById('status').textContent = 'Starting simulation...';
+            document.getElementById('status').className = 'status';
+            
+            // Simulate frame processing
+            let frameCount = 0;
+            const interval = setInterval(() => {
+                frameCount++;
+                document.getElementById('status').textContent = `🔄 Simulation running... Frame ${frameCount}`;
+                
+                if (frameCount >= 10) {
+                    clearInterval(interval);
+                    document.getElementById('status').textContent = '✅ Simulation completed!';
+                    document.getElementById('status').className = 'status success';
+                }
+            }, 200);
+        }
+    </script>
+</body>
+</html>
