@@ -1,0 +1,30 @@
+{
+    "files.watcherExclude": {
+        "**/android_logs.txt": false,
+        "**/android_errors.txt": false
+    },
+    "files.associations": {
+        "android_logs.txt": "log",
+        "android_errors.txt": "log"
+    },
+    "editor.quickSuggestions": {
+        "strings": true
+    },
+    "android.logcat.enabled": true,
+    "android.logcat.filters": [
+        "MainActivity",
+        "OpenGLRenderer", 
+        "FallbackRenderer",
+        "CameraManager",
+        "JNIBridge"
+    ],
+    "android.logcat.autoScroll": true,
+    "android.logcat.highlightErrors": true,
+    "android.logcat.highlightWarnings": true,
+    "android.logcat.timestamp": true,
+    "android.logcat.pid": true,
+    "android.logcat.tid": true,
+    "android.logcat.level": true,
+    "android.logcat.tag": true,
+    "android.logcat.message": true
+}
