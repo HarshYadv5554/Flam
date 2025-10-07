@@ -26,5 +26,6 @@
     "android.logcat.tid": true,
     "android.logcat.level": true,
     "android.logcat.tag": true,
-    "android.logcat.message": true
+    "android.logcat.message": true,
+    "java.configuration.updateBuildConfiguration": "automatic"
 }
