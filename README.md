@@ -25,17 +25,28 @@ A complete real-time edge detection application with Android native processing a
 
 ### **Edge Detection Results**
 
+<table>
+<tr>
+<td width="50%">
+
 #### **Original Image:**
 ![Original Image](original.jpg)
 - **Source**: Raw camera feed
 - **Format**: High-resolution image
 - **Content**: Clear view of objects and environment
 
+</td>
+<td width="50%">
+
 #### **Edge Detected Image:**
 ![Edge Detected Image](edge%20detected.jpg)
 - **Processing**: OpenCV Canny edge detection
 - **Result**: White edges on black background
 - **Quality**: Clean edge detection with preserved object outlines
+
+</td>
+</tr>
+</table>
 
 ### **Demo Videos**
 
