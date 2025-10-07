@@ -49,6 +49,12 @@ A complete real-time edge detection application with Android native processing a
 
 **Watch the web viewer in action:** [Web Viewer Demo Video](https://www.loom.com/share/47639ac2a40f4e4787c715e1fc3de56f)
 
+#### **Web Viewer Screenshot:**
+![Web Viewer Preview](web%20preview.jpg)
+- **Interface**: TypeScript web viewer with real-time stats
+- **Features**: Sample frame display, simulation controls, performance monitoring
+- **Technology**: Modern web interface with WebSocket communication
+
 ---
 
 ## **Features Implemented**
@@ -267,15 +273,7 @@ Flam/
 
 ---
 
-## 🎯 **Assignment Compliance**
 
-### **✅ Required Features (Must-Have):**
-- ✅ **Camera Feed Integration** - Camera2 API with real-time capture
-- ✅ **OpenCV C++ Processing** - Native edge detection via JNI
-- ✅ **OpenGL ES Rendering** - Hardware-accelerated graphics
-- ✅ **TypeScript Web Viewer** - Modern web development
-- ✅ **Real-time Performance** - 10-15 FPS target achieved
-- ✅ **Modular Project Structure** - Clean, organized codebase
 
 ### **✅ Bonus Features (All Implemented):**
 - ✅ **Toggle Button** - Switch between raw camera and edge detection
@@ -283,32 +281,6 @@ Flam/
 - ✅ **Processing Time** - Frame processing time tracking
 - ✅ **OpenGL Shader Effects** - Custom vertex and fragment shaders
 - ✅ **WebSocket/HTTP Endpoint** - Real-time communication for web viewer
-
----
-
-## 📝 **Commit History**
-
-The project includes a complete Git commit history showing:
-- **Initial Setup** - Android project configuration and Gradle setup
-- **Android Development** - Complete app with camera, OpenCV, and OpenGL
-- **Web Implementation** - TypeScript web viewer with real-time features
-- **Documentation** - Comprehensive README and project status
-- **Testing & Debugging** - Performance optimization and bug fixes
-
-**View full commit history:** [GitHub Repository](https://github.com/HarshYadv5554/Flam)
-
----
-
-## 🎓 **Learning Outcomes**
-
-This project demonstrates proficiency in:
-- **Android Development** - Modern Android app development with Camera2 API
-- **Native Programming** - C++ and JNI integration for performance-critical tasks
-- **Computer Vision** - OpenCV implementation for real-time edge detection
-- **Graphics Programming** - OpenGL ES shaders for hardware-accelerated rendering
-- **Web Development** - TypeScript and real-time communication
-- **System Integration** - Multi-platform development and deployment
-
 ---
 
 ## 🚀 **Quick Start**
@@ -327,5 +299,3 @@ This project demonstrates proficiency in:
 4. Click "Load Sample Frame" to start
 
 ---
-
-**Ready for submission with complete functionality, all bonus features implemented, and comprehensive documentation!**
