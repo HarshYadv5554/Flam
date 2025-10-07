@@ -10,14 +10,14 @@ A complete real-time edge detection application with Android native processing a
 ### **Android App Screenshots**
 
 #### **App in Standby Mode:**
-![Android App - Standby Mode](screenshots/android-standby.png)
+
 - **Performance**: 28.6 fps
 - **Status**: Edge Detection: STANDBY
 - **Camera Feed**: Raw camera feed with some processing artifacts
 - **Button**: "ENABLE EDGE DETECTION" ready for activation
 
 #### **App with Edge Detection Active:**
-![Android App - Active Mode](screenshots/android-active.png)
+
 - **Performance**: 12.0 fps
 - **Status**: Edge Detection: ACTIVE
 - **Camera Feed**: Processed edge detection showing white edges on black background
