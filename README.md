@@ -23,6 +23,20 @@ A complete real-time edge detection application with Android native processing a
 - **Camera Feed**: Processed edge detection showing white edges on black background
 - **Button**: "DISABLE EDGE DETECTION" to toggle off
 
+### **🖼️ Edge Detection Results**
+
+#### **Original Image:**
+![Original Image](original.jpg)
+- **Source**: Raw camera feed
+- **Format**: High-resolution image
+- **Content**: Clear view of objects and environment
+
+#### **Edge Detected Image:**
+![Edge Detected Image](edge%20detected.jpg)
+- **Processing**: OpenCV Canny edge detection
+- **Result**: White edges on black background
+- **Quality**: Clean edge detection with preserved object outlines
+
 ### **🎥 Demo Videos**
 
 #### **📱 Android App Demo:**
