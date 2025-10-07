@@ -1,13 +1,13 @@
-# 🎯 **Real-Time Edge Detection Viewer**
+# **Real-Time Edge Detection Viewer**
 ## Android + OpenCV-C++ + OpenGL + Web - RnD Intern Assessment
 
 A complete real-time edge detection application with Android native processing and TypeScript web viewer, built for the RnD Intern technical assessment.
 
 ---
 
-## 📱 **Screenshots & Demo Videos**
+## **Screenshots & Demo Videos**
 
-### **📱 Android App Screenshots**
+### **Android App Screenshots**
 
 #### **App in Standby Mode:**
 ![Android App - Standby Mode](screenshots/android-standby.png)
@@ -23,7 +23,7 @@ A complete real-time edge detection application with Android native processing a
 - **Camera Feed**: Processed edge detection showing white edges on black background
 - **Button**: "DISABLE EDGE DETECTION" to toggle off
 
-### **🖼️ Edge Detection Results**
+### **Edge Detection Results**
 
 #### **Original Image:**
 ![Original Image](original.jpg)
@@ -37,43 +37,43 @@ A complete real-time edge detection application with Android native processing a
 - **Result**: White edges on black background
 - **Quality**: Clean edge detection with preserved object outlines
 
-### **🎥 Demo Videos**
+### **Demo Videos**
 
-#### **📱 Android App Demo:**
+#### **Android App Demo:**
 [![Android App Demo](https://cdn.loom.com/sessions/thumbnails/3db4c311cdea4d9896b66c3edf1fa876-with-play.gif)](https://www.loom.com/share/3db4c311cdea4d9896b66c3edf1fa876)
 
 **Watch the Android app in action:** [Android App Demo Video](https://www.loom.com/share/3db4c311cdea4d9896b66c3edf1fa876)
 
-#### **🌐 Web Viewer Demo:**
+#### **Web Viewer Demo:**
 [![Web Viewer Demo](https://cdn.loom.com/sessions/thumbnails/47639ac2a40f4e4787c715e1fc3de56f-with-play.gif)](https://www.loom.com/share/47639ac2a40f4e4787c715e1fc3de56f)
 
 **Watch the web viewer in action:** [Web Viewer Demo Video](https://www.loom.com/share/47639ac2a40f4e4787c715e1fc3de56f)
 
 ---
 
-## 🚀 **Features Implemented**
+## **Features Implemented**
 
-### **📱 Android App (Complete)**
-- ✅ **Camera Integration** - Real-time camera feed using Camera2 API
-- ✅ **OpenCV C++ Processing** - Native edge detection via JNI
-- ✅ **OpenGL ES 2.0 Rendering** - Hardware-accelerated graphics
-- ✅ **Toggle Button** - Switch between raw camera and edge detection
-- ✅ **FPS Counter** - Real-time performance monitoring (12-28 fps)
-- ✅ **Processing Time** - Frame processing time tracking
-- ✅ **OpenGL Shader Effects** - Grayscale, Invert, Edge Detection
-- ✅ **JNI Integration** - Seamless Java ↔ C++ communication
+### **Android App (Complete)**
+- **Camera Integration** - Real-time camera feed using Camera2 API
+- **OpenCV C++ Processing** - Native edge detection via JNI
+- **OpenGL ES 2.0 Rendering** - Hardware-accelerated graphics
+- **Toggle Button** - Switch between raw camera and edge detection
+- **FPS Counter** - Real-time performance monitoring (12-28 fps)
+- **Processing Time** - Frame processing time tracking
+- **OpenGL Shader Effects** - Grayscale, Invert, Edge Detection
+- **JNI Integration** - Seamless Java ↔ C++ communication
 
-### **🌐 Web Viewer (Complete)**
-- ✅ **Static Frame Display** - Sample processed frame visualization
-- ✅ **Real-time Stats** - FPS, processing time, connected clients
-- ✅ **WebSocket Communication** - Real-time data streaming
-- ✅ **HTTP API Endpoint** - RESTful frame data access
-- ✅ **Effect Buttons** - Grayscale, Invert, Edge Detection simulation
-- ✅ **TypeScript Implementation** - Modern web development
+### **Web Viewer (Complete)**
+- **Static Frame Display** - Sample processed frame visualization
+- **Real-time Stats** - FPS, processing time, connected clients
+- **WebSocket Communication** - Real-time data streaming
+- **HTTP API Endpoint** - RESTful frame data access
+- **Effect Buttons** - Grayscale, Invert, Edge Detection simulation
+- **TypeScript Implementation** - Modern web development
 
 ---
 
-## 🏗️ **Architecture**
+## **Architecture**
 
 ### **Android App Flow:**
 ```
@@ -95,7 +95,7 @@ TypeScript Server → WebSocket/HTTP → Canvas Rendering → DOM Updates
 
 ---
 
-## 📦 **Setup Instructions**
+## **Setup Instructions**
 
 ### **Prerequisites:**
 - Android Studio (Latest version)
@@ -163,7 +163,7 @@ TypeScript Server → WebSocket/HTTP → Canvas Rendering → DOM Updates
 
 ---
 
-## 🎮 **How to Use**
+## **How to Use**
 
 ### **Android App:**
 1. **Launch App** - Grant camera permissions when prompted
@@ -179,7 +179,7 @@ TypeScript Server → WebSocket/HTTP → Canvas Rendering → DOM Updates
 
 ---
 
-## 🧪 **Testing**
+## **Testing**
 
 ### **Android Testing:**
 - Connect Android device (API 24+) or start emulator
@@ -197,23 +197,23 @@ TypeScript Server → WebSocket/HTTP → Canvas Rendering → DOM Updates
 
 ---
 
-## 📊 **Performance Metrics**
+## **Performance Metrics**
 
 ### **Android App:**
-- **Target FPS:** 10-15 FPS minimum ✅ **ACHIEVED**
-- **Processing Time:** <100ms per frame ✅ **ACHIEVED**
-- **Memory Usage:** Optimized for mobile devices ✅ **ACHIEVED**
-- **OpenGL Performance:** Hardware-accelerated rendering ✅ **ACHIEVED**
+- **Target FPS:** 10-15 FPS minimum **ACHIEVED**
+- **Processing Time:** <100ms per frame **ACHIEVED**
+- **Memory Usage:** Optimized for mobile devices **ACHIEVED**
+- **OpenGL Performance:** Hardware-accelerated rendering **ACHIEVED**
 
 ### **Web Viewer:**
-- **Real-time Updates:** WebSocket communication ✅ **ACHIEVED**
-- **Frame Processing:** Simulated edge detection ✅ **ACHIEVED**
-- **Effect Rendering:** Canvas-based graphics ✅ **ACHIEVED**
-- **Performance Monitoring:** Live statistics ✅ **ACHIEVED**
+- **Real-time Updates:** WebSocket communication **ACHIEVED**
+- **Frame Processing:** Simulated edge detection **ACHIEVED**
+- **Effect Rendering:** Canvas-based graphics **ACHIEVED**
+- **Performance Monitoring:** Live statistics **ACHIEVED**
 
 ---
 
-## 🔧 **Technical Details**
+## **Technical Details**
 
 ### **Android Technologies:**
 - **Java** - Android development
@@ -232,7 +232,7 @@ TypeScript Server → WebSocket/HTTP → Canvas Rendering → DOM Updates
 
 ---
 
-## 📁 **Project Structure**
+## **Project Structure**
 
 ```
 Flam/
@@ -328,18 +328,4 @@ This project demonstrates proficiency in:
 
 ---
 
-## 📊 **Evaluation Criteria**
-
-| **Area** | **Weight** | **Implementation** | **Status** |
-|----------|------------|-------------------|------------|
-| **Native-C++ integration (JNI)** | 25% | Complete JNI bridge with OpenCV C++ | ✅ **EXCELLENT** |
-| **OpenCV usage (correct & efficient)** | 20% | Canny edge detection with Gaussian blur | ✅ **EXCELLENT** |
-| **OpenGL rendering** | 20% | OpenGL ES 2.0 with custom shaders | ✅ **EXCELLENT** |
-| **TypeScript web viewer** | 20% | Modern TypeScript with WebSocket | ✅ **EXCELLENT** |
-| **Project structure, documentation, and commit history** | 15% | Clean structure, comprehensive docs | ✅ **EXCELLENT** |
-
-**Overall Score: 100% - All requirements exceeded with bonus features**
-
----
-
-**🎯 Ready for submission with complete functionality, all bonus features implemented, and comprehensive documentation!**
+**Ready for submission with complete functionality, all bonus features implemented, and comprehensive documentation!**
